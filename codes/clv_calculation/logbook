@@ -1,0 +1,30 @@
+We generate trajectory at the observation gap we have for our assimilation. We then generate observations from it and perform assimilnation.
+
+Goal: We want to see is the analysis a good proxy for the true state for computing the clvs of a system.
+
+*L63
+Generate a trajectory of physical time 500 with dt=0.01 and 0.05
+Perform assimilation over full length. Note time when the error becomes bounded.
+
+We use the part of trajectory after the error become bounded. Denote the time by t0. 
+Use this part of trajectory as initial condition for the clv.
+
+
+*CLVs by Ginelli's algorithm
+We choose t0=10,i.e. 1000th assimilaion step. 
+The transient is for a physical time 100, starting at t0 after which the l2-error is bounded. Interval is 100, the backward trasient is also 100. So full length where we have to run calculations is 300 physical time. We choose this trajectory from the above after the l2 error becomes bounded. 
+
+Integrating the perturbations in time during the transients and the interval can use runge-kutta with smaller steps=0.001.
+We also need to reorthonormalize the perturbations, which we can at at time interval of 0.01. This is what used in the recent
+paper.
+
+
+*Questions to answer
+1. Sensitivity of clvs to the base trajectory 
+2. When computing clvs, can one predict clvs at next step (related to the question of differentiability of clvs)?
+3. How can one integrate the knowledge of the clvs into the enkf algorithm for better forecasts?
+4. How can one study the model errors and their structures via clvs?
+5.  
+
+
+
