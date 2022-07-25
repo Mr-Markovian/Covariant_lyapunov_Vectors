@@ -19,6 +19,20 @@ We also need to reorthonormalize the perturbations, which we can at at time inte
 paper.
 
 
+Values of parameters used for the analysis states
+1) g=0.05, cov=0.4, start_idx=4000, n1,n2,n3=(2000,1000,2000), dt_solver=0.005
+2) g=0.01, cov=0.4, start_idx=20000, n1,n2,n3=(10000,5000,10000), dt_solver=0.002
+3) 
+
+Value of parameters used for noisy state 
+1) cov=0.1,0.2,0.4
+
+CLV calculated for the noisy state versus the true state.
+For Effect of noise for different values on clv
+
+For Effect of noise for different values 
+
+
 *Questions to answer
 1. Sensitivity of clvs to the base trajectory 
 2. When computing clvs, can one predict clvs at next step (related to the question of differentiability of clvs)?

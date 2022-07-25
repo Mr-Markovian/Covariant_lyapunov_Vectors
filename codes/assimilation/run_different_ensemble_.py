@@ -59,7 +59,7 @@ parameters['assimilations']=50000
 
 #Observation Operator for observing y 
 H1_=np.zeros((m1,n1))
-H1_[0,m1]=np.eye(m1)   # for y, choose the location for
+H1_[0,1]=1     # for y, choose the location for
 
 #Creating a diagonal observation covariance matirx
 obs_cov1=mu*np.eye(m1)
