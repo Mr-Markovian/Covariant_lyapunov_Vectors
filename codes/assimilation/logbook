@@ -8,9 +8,8 @@ Initial condition of the filter bias=6.0, covariance=4.0.
 ob error cov=1.0 I
 ob_gap=0.01, 0.05
 
-Significance of 0.05 -> 
-A high frequency limit. The lyapunov time scale is ~ 1.12( l_max= 0.9), which is 22 times the observation gap chosen. We chose to look at this values are experiments employ high-freqency measurement of available quanitity. Employing or measuring different variables are 
-not possible, one some variables can be measured.
+Significance of 0.05 -> 0.05 is like 
+A high frequency limit. The lyapunov time scale is ~ 1.12( l_max= 0.9), which is 22 times the observation gap chosen. We chose to look at this values are experiments employ high-freqency measurement of available quanitity. Employing or measuring different variables are  not possible, one some variables can be measured.
 
 Note error covariance means error variance, as we have only y-coordinates being observed.
 This is still very good.
@@ -32,22 +31,30 @@ Perform assimilation over full length. Note time when the error becomes bounded.
 We use the part of trajectory after the error become bounded. Denote the time by t0. 
 Use this part of trajectory as initial condition for the clv.
 
-Notes: I chose y-coordinate for observation, as it is coupled to both x and z in the dynamics.
-The frequency of observations is 0.01, which I think is high-frequency case, which is also
-used in the paper. I tried different values of alpha, and arrived at the conclusion 
-increasing the alpha was less useful than increasing the number of ensembles.
-
-Next is to compute clvs along the analysis state. Same for the true state.
 
 * Results
 1. Understanding how to quantify the errors in clv is next important topic which we need to discuss.
-Also, similar in the spirit of filter stability, we want to see how the clvs differ from one 
-observation realization to another. This may generate statistics of the errors one may encounter.
+This may generate statistics of the errors one may encounter.
 But this being robust makes clvs of high practical utility. 
 
 2. Another way is to look at the cosine of the angle between the precomputed clv and the clvs obtained
 about the analysis state. We must also recover the exponents and other related properties.
 The relative angle between the clvs is also important to understand.
+
+Date-14 Aug,2022
+
+We now have the result of assiilation on L96-40( lexp=1.66.. ) with ob gap=0.05(~ 1/12 lyapunov time scale), 
+for T=500,(10000 assimilation steps). We ran this for different values of observation covariance=0.1 to 1.0 
+with partial observations of alternate coordinates. 
+
+Date-10 September 2022
+We now compute CLVs for L96 with the assimilated mean trajectory. We then compare the rmse of this trajectory with the 
+cases one obtained earlier. 
+We choose mu=0.1, 0.2, 0.3, 0.4, 0.5 and observe only 20 out of 40.
+We then compute the CLVs on this analysis by using the respective analysis means and compute the errors in angles of the CLVs.
+
+Further, we can do smoothing on filtered ensembles to futher imporve the accuracy which can naturally imporve the CLVs.
+
 
 
 * Possible future directions
@@ -58,3 +65,7 @@ filtering process. Since jacobian may depend on parameters, it can use mean of t
 Is there a possiblity of learning the operators for the clvs?
 Knowing it over most of the attractor for one parameter, can one predict the change with
 the change in parameters?
+
+Date : 20 Sept,
+I am now assiilating all observations to obtain the analysis. This analysis will be used to see if
+the CLVs are better or not.

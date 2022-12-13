@@ -8,15 +8,16 @@ dt=0.01
 
 # making the state noisy
 np.random.seed(2111997)
-mu=9.0
+mu=81.0
 noise_cov=mu*np.eye(model_dim)
 
 # Change to data path
-os.chdir('/home/shashank/Documents/Data Assimilation/ENKF_for_CLVs/data/L63_clvs/noisy_state/State')
+os.chdir('/home/shashank/Documents/Data Assimilation/ENKF_for_CLVs/data/L63_clvs/noisy_state')
 start_idx=25000 # starting point of the forward transient
-true_traj=np.load('State_g={}.npy'.format(dt))[start_idx:]
+true_traj=np.load('State/State_g={}.npy'.format(dt))[start_idx:]
 
 # We store the noisy trajectory in the new location
+os.mkdir('mu={}'.format(mu))
 os.chdir('/home/shashank/Documents/Data Assimilation/ENKF_for_CLVs/data/L63_clvs/noisy_state/mu={}'.format(mu))
 
 noisy_traj=true_traj+np.random.multivariate_normal(np.zeros(model_dim),noise_cov,true_traj.shape[0])

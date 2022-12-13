@@ -25,20 +25,82 @@ Values of parameters used for the analysis states
 3) 
 
 Value of parameters used for noisy state 
-1) cov=0.1,0.2,0.4
+1) cov=1.0 to 15.0 in steps of 1.0.
 
 CLV calculated for the noisy state versus the true state.
-For Effect of noise for different values on clv
-
-For Effect of noise for different values 
+For Effect of noise of different strength on clvs
 
 
 *Questions to answer
 1. Sensitivity of clvs to the base trajectory 
-2. When computing clvs, can one predict clvs at next step (related to the question of differentiability of clvs)?
 3. How can one integrate the knowledge of the clvs into the enkf algorithm for better forecasts?
 4. How can one study the model errors and their structures via clvs?
-5.  
 
 
+Difficult questions to solve
+1. High observation gaps >0.05 or 0.1.
+2. Goal is to sample CLV in between, is that even possible?
+3. Compute CLVs for high frequency, then compute CLVs for low frequency data and DA.
+4. Choose to use anaysis mean between observations gaps, or use analysis mean to propagate them
+5. Complete data driven method will clearly miss the above one( some of them may not).
+6. Looking at easy instance of model error
+7. Is there some parameterization that can help improve the jacobian for model error?
 
+Date : 10 August, 2022.
+
+We now answer the questions in context of Lorenz-96 
+1. How sensitive is CLVs to the underlying orbit?
+2. How can we recover CLVs here, under partial observations ?
+3. Two cases of changing observation covariance 
+4. Changing observation gaps, can we compute CLVs at intermediate points?  
+
+NOISY TRAJECTORY PART
+sigma=0.1 to 1.0 in steps of 0.02 and then 1.0 to 5.0
+starting point index=3000
+Forward transient T=150 to T=250 (2000)
+CLV Interval T=250 to 300 (1000)
+Backward transient T=300 to 400 (2000)
+
+ASSIMILATION PART
+Lorenz 96 40-dim assimilation parameters:
+
+alternate observations=20
+model dim=40
+loc type=gaspri
+loc length=4
+alpha=1.0
+ensemble number=25
+ob gap=0.05 (1/10 the order of lyapunov time scale)
+mu=0.1 to 0.7 and then 1.0 -> 5.0 (initially)
+
+Date: 15 Aug,
+the noise sensitivity of L96 has zero promise. The next thing is to change observation gap
+which may bring some improvement in this. For 0.05, it didn't prove to be useful.
+Also, we need to test for longer forward and backward transients. Noise levels are already low,
+
+Date: 18 Aug, 
+We now reduce the dimension of the model and first reproduce that the three models of dimensions 10,20 and 40 and 80 have the expected behaviour in terms of lyapunov exponents.
+
+Date: 25 Aug,
+We now check for sensitivity of L96-10 with very small noise values. First goal is to see what works.
+Then we will see what does not.
+Forcing=8.0
+dt=0.01
+dt_solver=0.002
+sigmas=np.array([0.1,0.05,0.01])
+
+Date: 29 Aug
+We set the total interval = 500 600 and 800 for L96-10,20 and 40. 
+we set gap=0.05 and dt_solver=0.01.
+10dim- n1,n2,n3=4000,2000,4000
+
+Date: 30 Aug
+System: L96-10 gap=0.01 
+I tested BLVs with noise. Now I test CLVs. n1=30000 n2=10000 n3=20000
+
+
+Date: 6 Sep
+System: L96-10 gap=0.05, T=500, total_step=10000
+n1= 3000 n2= 3000 n2= 4000
+
+ 

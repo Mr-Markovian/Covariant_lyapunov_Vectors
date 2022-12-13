@@ -3,7 +3,6 @@ and an rk4 which works for an ensemble of trajectories.
 It also has a stiff-pde solver EDTRK4 developed by Cox and Matthews.
 S.M. Cox; P.C. Matthews (2002). Exponential Time Differencing for Stiff Systems. , 176(2), 430–455. doi:10.1006/jcph.2002.6995 
 """
-
 import jax.numpy as jnp
 
 def rk4_solver(rhs_function,x_initial,time_step):

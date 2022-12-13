@@ -9,22 +9,24 @@ import os
 from numpy.linalg import norm,inv
 from ode_solvers import rk4_solver as solver
 #from scipy.integrate import solve_ivp 
-from testbed_models import L63
+from testbed_models import L96
 qr_decomp=jnp.linalg.qr
 
 # Compute the Jacobian of the system from the model
-model=L63       # use the model imported above
-model_name='L63'
-model_dim=3
-num_clv=3
+model_name='L96'
+model_dim=40
+num_clv=20
 
-#model parameters if needed
-rho = 28.0
-sigma = 10.0
-beta = 8.0/3
+#L63 model parameters if needed( when you want to change the default ones)
+#rho = 28.0
+#sigma = 10.0
+#beta = 8.0/3
+
+#L96 model parameters if needed( when you want to change the default ones)
+forcing=8.0
 
 # these parameters now give you the mode, which is only a function of x, the state vector
-model=partial(L63,sigma=10.0,rho=28.0,beta=8./3)
+model=partial(L96,forcing)
 
 #jacobian of the model
 jac_model=jit(jacfwd(model))
@@ -34,8 +36,11 @@ jac_model=jit(jacfwd(model))
 def tangent_propagator(X_):
     """tangent propagator returns the rhs for the ode for the perturbations, does not change 
     the base point of the trajectory"""
-    J_eval=jac_model(X_[:,0])
-    Y_=X_.at[:,1:].set(J_eval@(X_[:,1:]))
+    x_eval=X_[:,0]  # Nx1
+    in_tangents=X_[:,1:]
+    pushfwd = partial(jvp, jit(model) , (x_eval,))
+    y, out_tangents = vmap(pushfwd,in_axes=(0), out_axes=(None,0))((in_tangents,))
+    Y_=X_.at[:,1:].set(out_tangents) 
     return Y_
 
 # When the number of clvs is less than the jacobian dimension, we do not compute the full jacobian, but use jvp 
@@ -72,19 +77,19 @@ def backward_evolution(x_,y_k):
 # Forward transient
 
 # Load the trajectory of the system
-dt=0.01     # and 0.05
-dt_solver=0.002
+dt=0.05
+dt_solver=0.01
 n_iters=int(dt/dt_solver)
 
 # Change to data path
 start_idx=25000 # starting point of the forward transient
 
-#base_type='State'
-#os.chdir('/home/shashank/Documents/Data Assimilation/ENKF_for_CLVs/data/L63_clvs/noisy_state/State')
-#base_traj=np.load('State_g={}.npy'.format(dt))[start_idx:]
+base_type='State'
+os.chdir('/home/shashank/Documents/Data Assimilation/ENKF_for_CLVs/data/L63_clvs/noisy_state/State')
+base_traj=np.load('State_g={}.npy'.format(dt))[start_idx:]
 
 base_type='state_noisy'
-mu=9.0
+mu=81.0
 os.chdir('/home/shashank/Documents/Data Assimilation/ENKF_for_CLVs/data/L63_clvs/noisy_state/mu={}'.format(mu))
 base_traj=np.load('{}_g={}_mu={}.npy'.format(base_type,dt,mu))
 
@@ -92,7 +97,6 @@ base_traj=np.load('{}_g={}_mu={}.npy'.format(base_type,dt,mu))
 #mu=1.0
 #os.chdir('/home/shashank/Documents/Data Assimilation/ENKF_for_CLVs/data/L63_clvs/noisy_state/Analysis')
 #base_traj=np.load('Analysis_mean_g={}_mu={}.npy'.format(dt,mu))[start_idx:]
-
 
 # orthogonal perturbations at t=0
 X_start=np.zeros((model_dim,num_clv+1))
@@ -103,7 +107,7 @@ X_start[:,0]=base_traj[0]
 #Fixed jacobian in between observation gap
 my_solver=jit(partial(solver,rhs_function=tangent_propagator,time_step=dt_solver))
 
-#Evolving jacobian in between observation gap
+#Evolving jacobian in between observation gap, next thing to see for higher observation gaps.
 #my_solver=jit(partial(solver,rhs_function=model_plus_tangent_propagator,time_step=dt_solver))
 
 # Solver for three regions

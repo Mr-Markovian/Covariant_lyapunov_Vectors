@@ -12,9 +12,9 @@ def rk4_solver(rhs_function,time_step,x_initial):
     x_o=x_initial
     k1= rhs_function(x_initial)
     #print(k1.shape)
-    k2= rhs_function(x_initial+k1*time_step/2.0)
-    k3= rhs_function(x_initial+k2*time_step/2.0)
-    k4= rhs_function(x_initial+k3*time_step)
+    k2= rhs_function(x_initial+(k1*time_step/2.0))
+    k3= rhs_function(x_initial+(k2*time_step/2.0))
+    k4= rhs_function(x_initial+(k3*time_step))
     return x_o+(k1 + 2*k2 + 2*k3 + k4)*time_step/6.0
 
 def EDTRK4_solver_single(rhs_function_lin,rhs_function_nonlin,k,x_initial,time_step):
